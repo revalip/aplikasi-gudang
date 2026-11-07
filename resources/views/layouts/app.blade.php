@@ -10,6 +10,7 @@
     $menu = [
         ['label' => 'Dashboard', 'short' => 'Dashboard', 'icon' => 'layout-dashboard', 'route' => 'dashboard', 'active' => 'dashboard'],
         ['label' => 'Warehouse', 'short' => 'Warehouse', 'icon' => 'boxes', 'route' => 'items.index', 'active' => ['items.index', 'items.create', 'items.edit', 'items.show', 'items.part'], 'can' => 'warehouse.view'],
+        ['label' => 'Stock Opname', 'short' => 'Opname', 'icon' => 'clipboard-check', 'route' => 'stock-opnames.index', 'active' => 'stock-opnames.*', 'can' => 'warehouse.view'],
         ['label' => 'Laporan', 'short' => 'Laporan', 'icon' => 'download', 'route' => 'items.export', 'active' => 'items.export', 'can' => 'warehouse.view'],
         ['label' => 'Data Barang', 'short' => 'Barang', 'icon' => 'barcode', 'route' => 'inventories.index', 'active' => 'inventories.*', 'can' => 'inventory.view'],
         ['label' => 'Rack', 'short' => 'Rack', 'icon' => 'server', 'route' => 'racks.index', 'active' => 'racks.*', 'can' => 'racks.view'],
@@ -26,7 +27,7 @@
     $bottomItems = array_values(array_filter($menu, fn ($m) => in_array($m['route'], $bottomRoutes)));
     $accountItems = array_values(array_filter($menu, fn ($m) => ! in_array($m['route'], $bottomRoutes)));
 
-    $logisticRoutes = ['items.index', 'items.export', 'inventories.index', 'racks.index', 'item-types.index'];
+    $logisticRoutes = ['items.index', 'stock-opnames.index', 'items.export', 'inventories.index', 'racks.index', 'item-types.index'];
     $purchasingRoutes = ['purchasing.index', 'suppliers.index'];
     $salesRoutes = [];
     $adminRoutes = [];

@@ -177,6 +177,109 @@ class StockOpnameController extends Controller
     }
 
     /**
+     * Show form to create a new stock opname session.
+     */
+    public function create()
+    {
+        $locations = Location::orderBy('name')->get();
+        $suggestedNumber = StockOpname::nextNumber();
+
+        return view('stock-opnames.create', [
+            'locations' => $locations,
+            'suggestedNumber' => $suggestedNumber,
+        ]);
+    }
+
+    /**
+     * Store new stock opname (from create form or workspace save).
+     */
+    public function store(Request $request)
+    {
+        if ($request->has('items')) {
+            return $this->saveSession($request);
+        }
+
+        $validated = $request->validate([
+            'location_id' => ['required', 'exists:locations,id'],
+            'opname_date' => ['required', 'date'],
+            'count_mode' => ['nullable', 'in:zero,snapshot'],
+            'notes' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $location = Location::findOrFail($validated['location_id']);
+        $countMode = $validated['count_mode'] ?? 'zero';
+
+        $opname = DB::transaction(function () use ($validated, $location, $countMode) {
+            $opname = StockOpname::create([
+                'opname_number' => StockOpname::nextNumber(),
+                'opname_date' => $validated['opname_date'],
+                'location_id' => $location->id,
+                'status' => 'completed',
+                'notes' => $validated['notes'] ?? "Physical inventory audit for {$location->name}",
+                'created_by' => auth()->id(),
+                'completed_by' => auth()->id(),
+                'completed_at' => now(),
+            ]);
+
+            $items = Item::where('location_id', $location->id)
+                ->whereIn('status', ['Available', 'In Stock'])
+                ->selectRaw("coalesce(nullif(part_number, ''), '') as pn, min(item_name) as item_name, count(*) as system_qty")
+                ->groupByRaw("coalesce(nullif(part_number, ''), ''), case when part_number is null or part_number = '' then item_name else '' end")
+                ->get();
+
+            $inventories = Inventory::pluck('id', 'part_number');
+
+            foreach ($items as $row) {
+                $pn = !empty($row->pn) ? $row->pn : null;
+                $sysQty = (int) $row->system_qty;
+                $physicalQty = ($countMode === 'snapshot') ? $sysQty : 0;
+                $variance = $physicalQty - $sysQty;
+
+                StockOpnameItem::create([
+                    'stock_opname_id' => $opname->id,
+                    'inventory_id' => $pn ? ($inventories[$pn] ?? null) : null,
+                    'part_number' => $pn,
+                    'item_name' => $row->item_name,
+                    'system_qty' => $sysQty,
+                    'physical_qty' => $physicalQty,
+                    'variance' => $variance,
+                ]);
+
+                if ($variance > 0) {
+                    SerialScan::create([
+                        'serial_number' => $pn ?: $row->item_name,
+                        'item_id' => null,
+                        'direction' => 'in',
+                        'location_id' => $location->id,
+                        'scanned_by' => auth()->id(),
+                        'scanned_at' => now(),
+                        'notes' => "Stock Opname {$opname->opname_number} - Physical Surplus (+{$variance} units)",
+                    ]);
+                } elseif ($variance < 0) {
+                    SerialScan::create([
+                        'serial_number' => $pn ?: $row->item_name,
+                        'item_id' => null,
+                        'direction' => 'out',
+                        'location_id' => $location->id,
+                        'scanned_by' => auth()->id(),
+                        'scanned_at' => now(),
+                        'notes' => "Stock Opname {$opname->opname_number} - Physical Deficit ({$variance} units)",
+                    ]);
+                }
+            }
+
+            $opname->recalculateTotals();
+
+            ActivityLogger::log('created', "Completed Stock Opname {$opname->opname_number} for {$location->name}", $opname);
+
+            return $opname;
+        });
+
+        return redirect()->route('stock-opnames.show', $opname)
+            ->with('success', "Stock Opname {$opname->opname_number} successfully saved!");
+    }
+
+    /**
      * Export stock before counting (Step 1: Download Stock Before Sheet for selected floor)
      */
     public function exportTemplate(Request $request)

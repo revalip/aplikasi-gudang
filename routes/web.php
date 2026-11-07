@@ -11,6 +11,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\RackController;
+use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/items/part', [ItemController::class, 'part'])->name('items.part');
         Route::get('/items/{item}', [ItemController::class, 'show'])->whereNumber('item')->name('items.show');
         Route::get('/items-export', [ItemController::class, 'export'])->name('items.export');
+
+        // Stock Opname
+        Route::get('/stock-opnames', [StockOpnameController::class, 'index'])->name('stock-opnames.index');
+        Route::get('/stock-opnames/create', [StockOpnameController::class, 'create'])->name('stock-opnames.create');
+        Route::get('/stock-opnames/export-template', [StockOpnameController::class, 'exportTemplate'])->name('stock-opnames.export-template');
+        Route::get('/stock-opnames/{stockOpname}', [StockOpnameController::class, 'show'])->whereNumber('stockOpname')->name('stock-opnames.show');
+        Route::get('/stock-opnames/{stockOpname}/print-pdf', [StockOpnameController::class, 'printPdf'])->whereNumber('stockOpname')->name('stock-opnames.print-pdf');
+        Route::get('/stock-opnames/{stockOpname}/export', [StockOpnameController::class, 'export'])->whereNumber('stockOpname')->name('stock-opnames.export');
     });
     Route::middleware('can:warehouse.create')->group(function () {
         Route::get('/items-import', [ItemImportController::class, 'form'])->name('items.import');
@@ -60,6 +69,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/items-import', [ItemImportController::class, 'store'])->name('items.import.store');
         Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
         Route::post('/items', [ItemController::class, 'store'])->name('items.store');
+
+        // Stock Opname Actions
+        Route::post('/stock-opnames', [StockOpnameController::class, 'store'])->name('stock-opnames.store');
+        Route::post('/stock-opnames/save-session', [StockOpnameController::class, 'saveSession'])->name('stock-opnames.save-session');
+        Route::post('/stock-opnames/import-real', [StockOpnameController::class, 'importReal'])->name('stock-opnames.import-real');
+        Route::post('/stock-opnames/clear-import', [StockOpnameController::class, 'clearImport'])->name('stock-opnames.clear-import');
     });
     Route::middleware('can:warehouse.update')->group(function () {
         Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
