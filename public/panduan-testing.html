@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Testing Lengkap WMS - Mitra Jaringan Global</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0/dist/umd/lucide.min.js"></script>
+    <style>
+        body { font-family: 'Nunito', sans-serif; }
+        .step-badge {
+            background: linear-gradient(135deg, #0066A0 0%, #004E7A 100%);
+        }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+    <!-- TOP HEADER -->
+    <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur px-6 py-4 shadow-sm">
+        <div class="mx-auto flex max-w-7xl items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white font-black text-lg shadow-md">
+                    WMS
+                </span>
+                <div>
+                    <h1 class="text-lg font-black text-slate-900 leading-tight">Panduan Testing &amp; Verifikasi Fitur WMS</h1>
+                    <p class="text-xs text-slate-500 font-semibold">Mitra Jaringan Global &bull; Versi Revisi Menu, Serialized &amp; Outbound Flow</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 no-print">
+                <a href="#download-section" class="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-extrabold text-white shadow hover:bg-emerald-700 transition">
+                    <i data-lucide="download" class="h-4 w-4"></i> Download Template Excel
+                </a>
+                <button onclick="window.print()" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+                    <i data-lucide="printer" class="h-4 w-4"></i> Cetak / Simpan PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+
+        <!-- INTRO & HIGHLIGHTS -->
+        <div class="mb-8 rounded-2xl border border-blue-200 bg-blue-50/70 p-6">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <span class="inline-block rounded-md bg-blue-600 px-2.5 py-1 text-xs font-extrabold text-white uppercase tracking-wider mb-2">
+                        Penting Untuk Tester
+                    </span>
+                    <h2 class="text-xl font-black text-slate-900">Halo Tim Tester! Selamat Datang di Siklus Uji Coba WMS</h2>
+                    <p class="text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
+                        Dokumen ini memandu Anda melakukan pengujian end-to-end seluruh alur sistem (mulai dari master catalog, pengadaan PO, penerimaan barang, mutasi gudang, hingga Work Order dan Delivery Order). Fokus pengujian adalah menemukan <strong>anomali data, bug perhitungan stok, validasi input Serial Number, dan perbaikan tampilan dark mode</strong>.
+                    </p>
+                </div>
+                <div class="rounded-xl border border-blue-300 bg-white p-4 shadow-sm shrink-0 text-xs space-y-1.5">
+                    <div class="font-black text-slate-800">Ringkasan Perubahan Terbaru:</div>
+                    <div class="flex items-center gap-2 text-slate-600"><i data-lucide="check-circle" class="h-3.5 w-3.5 text-emerald-600"></i> Delivery Order pindah ke bawah Logistic</div>
+                    <div class="flex items-center gap-2 text-slate-600"><i data-lucide="check-circle" class="h-3.5 w-3.5 text-emerald-600"></i> Settings Submenu (Part Number, Rack, Types)</div>
+                    <div class="flex items-center gap-2 text-slate-600"><i data-lucide="check-circle" class="h-3.5 w-3.5 text-emerald-600"></i> Toggle Serialized vs Qty pada Add Item</div>
+                    <div class="flex items-center gap-2 text-slate-600"><i data-lucide="check-circle" class="h-3.5 w-3.5 text-emerald-600"></i> Filter SN, PN, Condition, Status di Detail Unit</div>
+                    <div class="flex items-center gap-2 text-slate-600"><i data-lucide="check-circle" class="h-3.5 w-3.5 text-emerald-600"></i> Dark Mode font Select2 diperbaiki</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOWNLOAD TEMPLATE SECTION -->
+        <section id="download-section" class="mb-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="file-spreadsheet" class="h-6 w-6 text-emerald-600"></i>
+                <h3 class="text-lg font-black text-slate-900">Template File Excel untuk Pengujian Import</h3>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">
+                Gunakan dua file contoh di bawah ini untuk menguji fitur import data secara instan tanpa perlu mengetik manual satu per satu:
+            </p>
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 hover:border-blue-400 transition">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <div class="text-sm font-extrabold text-slate-900">1. Sample Import Part Number (10 Data)</div>
+                            <div class="text-xs text-slate-500 mt-1">Berisi 10 Part Number lengkap (Mikrotik, Ruijie, Ubiquiti, Belden) mencakup perangkat Serialized dan Non-Serial (Qty).</div>
+                            <div class="mt-2 text-[11px] font-mono text-blue-700 bg-blue-50 px-2 py-0.5 rounded inline-block">
+                                Format: Part Number, Brand, Type, Tracking Type, Warranty, Specs
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-600">Gunakan di menu: <strong>Part Number -> Import</strong></span>
+                        <a href="/test-templates/sample-import-part-number.xlsx" download
+                           class="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-blue-700">
+                            <i data-lucide="download" class="h-3.5 w-3.5"></i> Unduh File
+                        </a>
+                    </div>
+                </div>
+
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 hover:border-blue-400 transition">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <div class="text-sm font-extrabold text-slate-900">2. Sample Import Warehouse Stock In (7 Baris)</div>
+                            <div class="text-xs text-slate-500 mt-1">Sampel data barang masuk fisik gudang untuk menguji auto-injeksi stok massal ke lokasi dan rak.</div>
+                            <div class="mt-2 text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded inline-block">
+                                Format: Part Number, SN, Brand, Status, Condition, Location, Rack
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-600">Gunakan di menu: <strong>Inventories -> Import</strong></span>
+                        <a href="/test-templates/sample-import-warehouse-stock-in.xlsx" download
+                           class="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-700">
+                            <i data-lucide="download" class="h-3.5 w-3.5"></i> Unduh File
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAGRAM ALUR UTAMA -->
+        <section class="mb-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 class="text-lg font-black text-slate-900 mb-2 flex items-center gap-2">
+                <i data-lucide="git-fork" class="h-5 w-5 text-blue-600"></i> Diagram Peta Alur Sistem (End-to-End Workflow)
+            </h3>
+            <p class="text-xs text-slate-500 mb-6">Berikut adalah bagan visual bagaimana seluruh modul saling terhubung mulai dari persiapan data hingga barang keluar:</p>
+
+            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                <!-- STEP 1 -->
+                <div class="rounded-xl border border-slate-200 bg-slate-50/50 p-4 relative">
+                    <div class="absolute -top-3 left-4 rounded-full bg-blue-600 px-2.5 py-0.5 text-[10px] font-black text-white">
+                        FASE 1
+                    </div>
+                    <div class="mt-1 font-extrabold text-sm text-slate-900">Katalog &amp; Master Data</div>
+                    <div class="text-xs text-slate-500 mt-1">Menu: <strong>Logistic -> Settings</strong></div>
+                    <ul class="mt-3 space-y-1.5 text-xs text-slate-700">
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> Item Types (Kategori)</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> Warehouse &amp; Racks</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> Part Number (SN vs Qty)</li>
+                    </ul>
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="rounded-xl border border-slate-200 bg-slate-50/50 p-4 relative">
+                    <div class="absolute -top-3 left-4 rounded-full bg-blue-600 px-2.5 py-0.5 text-[10px] font-black text-white">
+                        FASE 2
+                    </div>
+                    <div class="mt-1 font-extrabold text-sm text-slate-900">Pengadaan &amp; PO</div>
+                    <div class="text-xs text-slate-500 mt-1">Menu: <strong>Purchasing</strong></div>
+                    <ul class="mt-3 space-y-1.5 text-xs text-slate-700">
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> Buat PO ke Supplier</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> <strong>Approve PO di menu PO</strong></li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> Receive Item &amp; Scan SN</li>
+                    </ul>
+                </div>
+
+                <!-- STEP 3 -->
+                <div class="rounded-xl border border-slate-200 bg-slate-50/50 p-4 relative">
+                    <div class="absolute -top-3 left-4 rounded-full bg-blue-600 px-2.5 py-0.5 text-[10px] font-black text-white">
+                        FASE 3
+                    </div>
+                    <div class="mt-1 font-extrabold text-sm text-slate-900">Manajemen Gudang</div>
+                    <div class="text-xs text-slate-500 mt-1">Menu: <strong>Logistic -> Inventories</strong></div>
+                    <ul class="mt-3 space-y-1.5 text-xs text-slate-700">
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> Manual Add Item (Scan/Qty)</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> Import Stock In Excel</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> Filter Unit (SN, Status, dll)</li>
+                    </ul>
+                </div>
+
+                <!-- STEP 4 -->
+                <div class="rounded-xl border border-slate-200 bg-slate-50/50 p-4 relative">
+                    <div class="absolute -top-3 left-4 rounded-full bg-blue-600 px-2.5 py-0.5 text-[10px] font-black text-white">
+                        FASE 4
+                    </div>
+                    <div class="mt-1 font-extrabold text-sm text-slate-900">Permintaan &amp; WO</div>
+                    <div class="text-xs text-slate-500 mt-1">Menu: <strong>Sales -> Work Order</strong></div>
+                    <ul class="mt-3 space-y-1.5 text-xs text-slate-700">
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> Buat WO untuk Customer</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> Cek Stok Available (Bukan 0!)</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-blue-600"></i> Accept Work Order</li>
+                    </ul>
+                </div>
+
+                <!-- STEP 5 -->
+                <div class="rounded-xl border border-slate-200 bg-slate-50/50 p-4 relative">
+                    <div class="absolute -top-3 left-4 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-black text-white">
+                        FASE 5
+                    </div>
+                    <div class="mt-1 font-extrabold text-sm text-slate-900">Pengiriman &amp; DO</div>
+                    <div class="text-xs text-slate-500 mt-1">Menu: <strong>Logistic -> Delivery Order</strong></div>
+                    <ul class="mt-3 space-y-1.5 text-xs text-slate-700">
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-emerald-600"></i> Buat DO dari WO yang accepted</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-emerald-600"></i> Picking &amp; Scan SN keluar</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="h-3.5 w-3.5 text-emerald-600"></i> Ship DO (Stok jadi Sold Out)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- DETAIL TAHAPAN PENGUJIAN -->
+        <h3 class="text-xl font-black text-slate-900 mb-4 flex items-center gap-2">
+            <i data-lucide="list-checks" class="h-6 w-6 text-blue-600"></i> Tahapan Uji Coba Rinci &amp; Target Pemeriksaan Bug
+        </h3>
+
+        <div class="space-y-6">
+
+            <!-- SKENARIO 1 -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-700 font-black text-sm">1</span>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 text-base">Uji Coba Master Data &amp; Submenu Settings</h4>
+                            <p class="text-xs text-slate-500">Memeriksa struktur sidebar, submenu settings, dan tipe pencatatan Part Number.</p>
+                        </div>
+                    </div>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">Menu: Logistic -> Settings</span>
+                </div>
+
+                <div class="grid gap-4 md:grid-cols-2 text-xs">
+                    <div class="space-y-2">
+                        <div class="font-bold text-slate-800 uppercase tracking-wider text-[11px]">Langkah Pengujian:</div>
+                        <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                            <li>Buka menu <strong>Logistic</strong> di sidebar kiri, perhatikan ada menu collapsible <strong>Settings</strong>.</li>
+                            <li>Buka Settings, pastikan terdapat 3 menu: <strong>Part Number</strong>, <strong>Rack</strong>, dan <strong>Item Types</strong>.</li>
+                            <li>Klik menu <strong>Part Number</strong> -> Klik tombol <strong>Add Part Number</strong>.</li>
+                            <li>Perhatikan pilihan Radio: <strong>Serialized (SN &amp; MAC ID)</strong> vs <strong>Non-Serialized (Quantity / Non-SN)</strong>.</li>
+                            <li>Klik tombol <strong>Import</strong> -> Pilih file <code>sample-import-part-number.xlsx</code> -> Upload.</li>
+                        </ol>
+                    </div>
+                    <div class="rounded-xl border border-amber-200 bg-amber-50/60 p-4 space-y-2">
+                        <div class="font-bold text-amber-900 flex items-center gap-1.5">
+                            <i data-lucide="alert-triangle" class="h-4 w-4 text-amber-600"></i> Yang Harus Dipastikan (Target Bug):
+                        </div>
+                        <ul class="list-disc pl-4 space-y-1 text-amber-800">
+                            <li>Import berhasil memasukkan 10 Part Number baru.</li>
+                            <li>Badge penanda di tabel Part Number muncul sesuai: <code>Serialized (SN)</code> warna biru, dan <code>Non-Serial (Qty)</code> warna kuning.</li>
+                            <li>Submenu Settings tetap terbuka (tidak menutup sendiri) saat user berada di halaman Part Number / Rack / Item Types.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SKENARIO 2 -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-700 font-black text-sm">2</span>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 text-base">Uji Coba Pengadaan (PO) &amp; Konfirmasi Tombol Approve</h4>
+                            <p class="text-xs text-slate-500">Membuat Purchase Order, verifikasi letak tombol Approve di menu PO, lalu penerimaan barang fisik.</p>
+                        </div>
+                    </div>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">Menu: Purchasing -> Purchase Order</span>
+                </div>
+
+                <div class="grid gap-4 md:grid-cols-2 text-xs">
+                    <div class="space-y-2">
+                        <div class="font-bold text-slate-800 uppercase tracking-wider text-[11px]">Langkah Pengujian:</div>
+                        <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                            <li>Buka menu <strong>Purchase Order</strong> -> Klik <strong>Create PO</strong>.</li>
+                            <li>Pilih Supplier, masukkan Nomor PO (misal: <code>PO-TEST-001</code>), tambahkan item Part Number (misal: <code>CCR2216-1G-12XS-2XQ</code> Qty 2). Simpan PO.</li>
+                            <li>Status PO pertama kali adalah <code>Draft</code>.</li>
+                            <li><strong>Makesure Tombol Approve</strong>: Buka detail PO tersebut (klik nomor PO). Di bagian atas ada panel konfirmasi: Tombol hijau <strong>Approve</strong> dan tombol merah <strong>Reject</strong>.</li>
+                            <li>Klik tombol <strong>Approve</strong> (pastikan user punya hak <code>purchasing.approve</code>).</li>
+                            <li>Setelah di-approve, buka kembali PO tersebut: Panel <strong>Receive Items (Penerimaan Barang)</strong> sekarang telah terbuka!</li>
+                            <li>Masukkan Serial Number unit (misal: <code>CCR2216-SN-001</code> dan <code>CCR2216-SN-002</code>), lalu klik <strong>Receive Items</strong>.</li>
+                        </ol>
+                    </div>
+                    <div class="rounded-xl border border-blue-200 bg-blue-50/60 p-4 space-y-2">
+                        <div class="font-bold text-blue-900 flex items-center gap-1.5">
+                            <i data-lucide="info" class="h-4 w-4 text-blue-600"></i> Yang Harus Dipastikan (Target Bug):
+                        </div>
+                        <ul class="list-disc pl-4 space-y-1 text-blue-800">
+                            <li>Tombol Approve <strong>tetap berada di halaman detail PO</strong> di menu Purchasing.</li>
+                            <li>Penerimaan barang fisik tidak bisa dilakukan sebelum PO disetujui (status approved/ordered).</li>
+                            <li>Unit fisik yang diterima otomatis masuk ke daftar <strong>Inventories</strong> dengan status <code>Available</code> dan berelasi ke nomor PO tersebut.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SKENARIO 3 -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-700 font-black text-sm">3</span>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 text-base">Uji Coba Add Item (Toggle SN vs Qty &amp; Validasi Serialized)</h4>
+                            <p class="text-xs text-slate-500">Mencoba input barang langsung ke gudang dan memvalidasi pencegahan SN kosong.</p>
+                        </div>
+                    </div>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">Menu: Logistic -> Inventories -> Add Item</span>
+                </div>
+
+                <div class="grid gap-4 md:grid-cols-2 text-xs">
+                    <div class="space-y-2">
+                        <div class="font-bold text-slate-800 uppercase tracking-wider text-[11px]">Langkah Pengujian:</div>
+                        <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                            <li>Buka menu <strong>Inventories</strong> -> Klik <strong>Add Item</strong>.</li>
+                            <li>Pilih Part Number yang bertipe Serialized (misal: <code>RB5009UG+S+IN</code>). Form akan otomatis berada di mode <strong>Serialized (Scan SN)</strong>.</li>
+                            <li><strong>Uji Validasi Penolakan</strong>: Kosongkan kotak Serial Number, lalu klik <strong>Save Item</strong>.</li>
+                            <li>Sistem harus <strong>menolak</strong> dan memunculkan notifikasi bahwa barang serialized wajib mengisi SN.</li>
+                            <li>Scan / masukkan SN yang valid (misal: <code>RB5009-TEST-999</code>), lalu simpan.</li>
+                            <li>Ulangi dengan memilih Part Number non-serial (misal: <code>UTP-CAT6-BELDEN-305M</code>). Form otomatis berganti ke mode <strong>Non-Serialized (Quantity)</strong>. Masukkan Qty 5 roll, lalu simpan.</li>
+                        </ol>
+                    </div>
+                    <div class="rounded-xl border border-amber-200 bg-amber-50/60 p-4 space-y-2">
+                        <div class="font-bold text-amber-900 flex items-center gap-1.5">
+                            <i data-lucide="shield-alert" class="h-4 w-4 text-amber-600"></i> Yang Harus Dipastikan (Target Bug):
+                        </div>
+                        <ul class="list-disc pl-4 space-y-1 text-amber-800">
+                            <li>Barang Serialized <strong>sama sekali tidak boleh bisa tersimpan</strong> tanpa Serial Number.</li>
+                            <li>Jika tombol toggle di klik manual (beralih dari Serialized ke Qty), inputan barcode scan tersembunyi dan inputan kuantitas angka muncul secara mulus.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SKENARIO 4 -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-700 font-black text-sm">4</span>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 text-base">Uji Coba Filter &amp; Pencarian Unit (Detail Part Number)</h4>
+                            <p class="text-xs text-slate-500">Mengecek bilah filter lengkap di halaman part dan kolom dinamis SN vs Qty.</p>
+                        </div>
+                    </div>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">Menu: Logistic -> Inventories -> Klik Salah Satu Part Number</span>
+                </div>
+
+                <div class="grid gap-4 md:grid-cols-2 text-xs">
+                    <div class="space-y-2">
+                        <div class="font-bold text-slate-800 uppercase tracking-wider text-[11px]">Langkah Pengujian:</div>
+                        <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                            <li>Buka menu <strong>Inventories</strong> -> Klik baris Part Number <code>CCR2216-1G-12XS-2XQ</code>.</li>
+                            <li>Perhatikan bilah filter di atas tabel: ada input <strong>SN</strong>, <strong>Part Number</strong>, <strong>Item Name</strong>, serta dropdown <strong>Condition</strong>, <strong>Status</strong>, dan <strong>Warehouse</strong>.</li>
+                            <li>Coba ketik potongan SN (misal: <code>001</code>) dan klik <strong>Apply Filter</strong>. Tabel harus menyaring unit yang cocok.</li>
+                            <li>Kembali ke Inventories, klik Part Number non-serial (misal: <code>UTP-CAT6-BELDEN-305M</code>).</li>
+                            <li>Perhatikan header tabel: Kolom <strong>SN / MAC ID hilang secara otomatis</strong> dan digantikan oleh <strong>Qty / Satuan</strong>!</li>
+                            <li>Coba ketik kata kunci di kotak search sidebar kiri ("Search SN, PN, item..."): Sistem langsung membawa Anda ke halaman unit search dengan hasil yang relevan.</li>
+                        </ol>
+                    </div>
+                    <div class="rounded-xl border border-blue-200 bg-blue-50/60 p-4 space-y-2">
+                        <div class="font-bold text-blue-900 flex items-center gap-1.5">
+                            <i data-lucide="check-circle-2" class="h-4 w-4 text-blue-600"></i> Yang Harus Dipastikan (Target Bug):
+                        </div>
+                        <ul class="list-disc pl-4 space-y-1 text-blue-800">
+                            <li>Reset filter mengembalikan tabel ke daftar utuh.</li>
+                            <li>Pencarian global di sidebar tidak menyebabkan error atau 404.</li>
+                            <li>Tidak ada header SN yang muncul pada barang yang bertipe non-serial (Qty).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SKENARIO 5 -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-800 font-black text-sm">5</span>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 text-base">Uji Coba Work Order &amp; Delivery Order (Fix Bug Stok 0)</h4>
+                            <p class="text-xs text-slate-500">Memastikan stok Available terbaca di WO, alokasi unit fisik, dan pengiriman DO.</p>
+                        </div>
+                    </div>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">Menu: Sales -> Work Order &amp; Logistic -> Delivery Order</span>
+                </div>
+
+                <div class="grid gap-4 md:grid-cols-2 text-xs">
+                    <div class="space-y-2">
+                        <div class="font-bold text-slate-800 uppercase tracking-wider text-[11px]">Langkah Pengujian:</div>
+                        <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                            <li>Buka menu <strong>Sales -> Work Order</strong> -> Klik <strong>Create Work Order</strong>.</li>
+                            <li>Pilih Customer, isi subject, lalu tambahkan baris item.</li>
+                            <li>Pada dropdown Part Number, pilih item yang tadi sudah dimasukkan ke gudang (misal: <code>CCR2216-1G-12XS-2XQ</code>).</li>
+                            <li><strong>Periksa Kuantitas Stok</strong>: Pastikan stok yang tertulis di samping Part Number menampilkan jumlah stok yang sebenarnya (misal: <code>(2 Available)</code>, <strong>BUKAN 0!</strong>).</li>
+                            <li>Simpan WO -> Klik tombol <strong>Accept Work Order</strong> (status menjadi <code>accepted</code>).</li>
+                            <li>Sekarang pindah ke menu <strong>Logistic -> Delivery Order</strong> (perhatikan posisinya sudah berada di bawah Logistic!).</li>
+                            <li>Klik <strong>Create Delivery Order from WO</strong> -> Pilih WO yang baru saja di-accept.</li>
+                            <li>Sistem membuat DO dengan status <code>picking</code> dan mengunci unit fisik dari gudang.</li>
+                            <li>Lakukan scan / verifikasi SN yang dikirim, lalu klik tombol <strong>Ship Delivery Order</strong>.</li>
+                        </ol>
+                    </div>
+                    <div class="rounded-xl border border-emerald-200 bg-emerald-50/60 p-4 space-y-2">
+                        <div class="font-bold text-emerald-900 flex items-center gap-1.5">
+                            <i data-lucide="check-check" class="h-4 w-4 text-emerald-600"></i> Yang Harus Dipastikan (Target Bug):
+                        </div>
+                        <ul class="list-disc pl-4 space-y-1 text-emerald-800">
+                            <li>Stok barang berstatus <code>Available</code> terbaca akurat di form WO (tidak lagi 0).</li>
+                            <li>Delivery Order berada di grup menu <strong>Logistic</strong> (bukan Sales).</li>
+                            <li>Setelah DO dikirim (status delivered), unit fisik di Inventories gudang berubah status menjadi <code>Sold Out</code> dan tanggal <code>Stuff Out</code> terisi.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SKENARIO 6 -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 text-purple-800 font-black text-sm">6</span>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 text-base">Uji Coba Dark Mode UI &amp; Dropdown Select2</h4>
+                            <p class="text-xs text-slate-500">Memeriksa keterbacaan teks dropdown Select2 dan warna kontras saat tema gelap aktif.</p>
+                        </div>
+                    </div>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">Aksi: Toggle Dark Mode di Topbar</span>
+                </div>
+
+                <div class="grid gap-4 md:grid-cols-2 text-xs">
+                    <div class="space-y-2">
+                        <div class="font-bold text-slate-800 uppercase tracking-wider text-[11px]">Langkah Pengujian:</div>
+                        <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                            <li>Klik ikon <strong>Bulan (Moon)</strong> di header atas sebelah kanan untuk mengaktifkan Dark Mode.</li>
+                            <li>Buka halaman <strong>Inventories -> Add Item</strong>.</li>
+                            <li>Klik dropdown <strong>Part Number</strong> (Select2 dropdown).</li>
+                            <li>Ketik kata kunci di dalam kolom pencarian Select2.</li>
+                            <li>Lihat warna daftar opsi yang muncul.</li>
+                        </ol>
+                    </div>
+                    <div class="rounded-xl border border-purple-200 bg-purple-50/60 p-4 space-y-2">
+                        <div class="font-bold text-purple-900 flex items-center gap-1.5">
+                            <i data-lucide="eye" class="h-4 w-4 text-purple-600"></i> Yang Harus Dipastikan (Target Bug):
+                        </div>
+                        <ul class="list-disc pl-4 space-y-1 text-purple-800">
+                            <li>Latar belakang dropdown Select2 berwarna gelap (`#1E293B`), <strong>TIDAK putih lagi</strong>.</li>
+                            <li>Teks pilihan berwarna putih terang (`#F8FAFC`), dapat dibaca dengan sangat jelas.</li>
+                            <li>Saat opsi disorot (hover), latar belakang berubah menjadi biru brand (`#0066A0`) dengan teks putih bersih.</li>
+                            <li>Tidak ada teks putih yang bertumpuk di atas latar belakang putih.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FORM LOG TEMUAN BUG UNTUK TESTER -->
+        <section class="mt-10 rounded-2xl border border-slate-300 bg-white p-6 shadow-sm no-print">
+            <h3 class="text-lg font-black text-slate-900 mb-2 flex items-center gap-2">
+                <i data-lucide="clipboard-edit" class="h-5 w-5 text-blue-600"></i> Format Catatan Temuan Bug (Bisa Dicopy Tester)
+            </h3>
+            <p class="text-xs text-slate-500 mb-4">Jika teman Anda menemukan anomali atau pesan error saat melakukan pengujian, minta mereka mencatat dengan format ringkas ini:</p>
+
+            <div class="rounded-xl bg-slate-900 p-4 font-mono text-xs text-emerald-400 overflow-x-auto leading-relaxed">
+[TEMUAN ANOMALI / BUG WMS]<br>
+1. Menu / Halaman: (misal: Logistic -> Inventories -> Add Item)<br>
+2. Aksi yang dilakukan: (misal: klik Save dengan toggle Serialized aktif tapi SN kosong)<br>
+3. Hasil yang didapat: (misal: muncul error 500 / data tetap tersimpan / tampilan berantakan)<br>
+4. Hasil yang diharapkan: (misal: muncul validasi merah bahwa SN wajib diisi)<br>
+5. Perangkat & Browser: (misal: Windows 11 Chrome Dark Mode)
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
+        &copy; 2026 PT Mitra Jaringan Global &bull; Warehouse Management System Testing Handbook
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
