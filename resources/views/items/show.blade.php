@@ -101,45 +101,6 @@
 
     <div class="space-y-4">
         <section class="rounded-2xl bg-white p-5 shadow-sm">
-            <h2 class="font-extrabold">Entered Together</h2>
-            <p class="mb-3 text-xs text-muted">Other units entered in the same batch as this unit.</p>
-            @if ($batchMates->isEmpty())
-                <p class="text-sm text-muted">This unit was entered alone.</p>
-            @else
-                <div class="flex flex-wrap gap-1.5">
-                    @foreach ($batchMates as $mate)
-                        <a href="{{ route('items.show', $mate) }}" class="rounded-lg bg-canvas px-2 py-1 font-mono text-xs font-semibold text-brand hover:bg-brand-tint">{{ $mate->serial_number ?: '-' }}</a>
-                    @endforeach
-                </div>
-                <p class="mt-2 text-xs text-muted">{{ $batchMates->count() + 1 }} units in this batch including this one.</p>
-            @endif
-        </section>
-
-        <section class="overflow-hidden rounded-2xl bg-white shadow-sm">
-            <div class="px-5 pt-5">
-                <h2 class="font-extrabold">Stock of This Part Number by PO</h2>
-                <p class="mb-3 text-xs text-muted">Shows whether this unit is new stock or older stock.</p>
-            </div>
-            <table class="w-full text-sm">
-                <thead class="border-y border-line bg-slate-50 text-left text-xs font-bold text-muted">
-                    <tr><th class="px-5 py-2">PO</th><th class="px-3 py-2">Supplier</th><th class="px-3 py-2">PO Date</th><th class="px-3 py-2">First entered</th><th class="px-5 py-2 text-right">Units</th></tr>
-                </thead>
-                <tbody>
-                    @foreach ($stockByPo as $row)
-                        @php $mine = (string) $row->po === (string) $item->no_po_spr; $rowPo = $pos[$row->po] ?? null; @endphp
-                        <tr class="border-b border-slate-100 last:border-0 {{ $mine ? 'bg-brand-tint/60 font-bold' : '' }}">
-                            <td class="whitespace-nowrap px-5 py-2">{{ $row->po !== '' ? $row->po : 'No PO' }}{!! $mine ? ' <span class="ml-1 rounded bg-brand px-1.5 py-0.5 text-[10px] font-extrabold text-white">THIS UNIT</span>' : '' !!}</td>
-                            <td class="px-3 py-2">{{ $rowPo?->supplier?->name ?? '-' }}</td>
-                            <td class="px-3 py-2">{{ $date($rowPo?->order_date) ?? '-' }}</td>
-                            <td class="px-3 py-2">{{ \Illuminate\Support\Carbon::parse($row->first_in)->format('d/m/Y') }}</td>
-                            <td class="px-5 py-2 text-right">{{ $row->qty }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </section>
-
-        <section class="rounded-2xl bg-white p-5 shadow-sm">
             <h2 class="mb-3 font-extrabold">History</h2>
             @php
                 $timeline = collect();
